@@ -50,13 +50,31 @@ class Phonemizer:
         texts = [text] if single_input_string else text
         result = self.phonemise_list(texts=texts, lang=lang,
                                      punctuation=punctuation, expand_acronyms=expand_acronyms)
-
+        
         phoneme_lists = [''.join(phoneme_list) for phoneme_list in result.phonemes]
 
         if single_input_string:
             return phoneme_lists[0]
         else:
             return phoneme_lists
+
+    def phonemise_sentence(self,
+                           sentence: str,
+                           lang: str,
+                           punctuation: str = DEFAULT_PUNCTUATION,
+                           batch_size: int = 8) -> PhonemizerResult:
+        punc_set = set(punctuation + '- ')
+        words = sentence.split()
+        # collect dictionary phonemes for words and hyphenated words
+        word_phonemes = {word: self._get_dict_entry(word=word, lang=lang, punc_set=punc_set)
+                         for word in words}
+        words_to_predict = [word for word in words if word_phonemes[word] is None]
+        predictions = self.predictor(words=words_to_predict,
+                                     lang=lang,
+                                     batch_size=batch_size)
+
+        word_phonemes.update({pred.word: pred.phonemes for pred in predictions})
+        breakpoint()
 
     def phonemise_list(self,
                        texts: List[str],
@@ -82,10 +100,11 @@ class Phonemizer:
 
         punc_set = set(punctuation + '- ')
         punc_pattern = re.compile(f'([{punctuation + " "}])')
-
+        
         split_text, cleaned_words = [], set()
         for text in texts:
-            cleaned_text = ''.join([t for t in text if t.isalnum() or t in punc_set])
+            # cleaned_text = ''.join([t for t in text if t.isalnum() or t in punc_set])
+            cleaned_text = text
             split = re.split(punc_pattern, cleaned_text)
             split = [s for s in split if len(s) > 0]
             split_text.append(split)
@@ -96,14 +115,15 @@ class Phonemizer:
                          for word in cleaned_words}
 
         # if word is not in dictionary, split it into subwords
-        words_to_split = [w for w in cleaned_words if word_phonemes[w] is None]
+        # words_to_split = [w for w in cleaned_words if word_phonemes[w] is None]
+        words_to_split = []
         word_splits = dict()
         for word in words_to_split:
             key = word
             word = self._expand_acronym(word) if expand_acronyms else word
             word_split = re.split(r'([-])', word)
             word_splits[key] = word_split
-
+        
         # collect dictionary entries of subwords
         subwords = {w for values in word_splits.values() for w in values}
         subwords = {w for w in subwords if w not in word_phonemes}

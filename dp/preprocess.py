@@ -2,7 +2,9 @@ from collections import Counter
 from pathlib import Path
 from random import Random
 from typing import List, Tuple, Iterable
+import re
 
+from nltk.tokenize import RegexpTokenizer
 import tqdm
 
 from dp.model.model import ModelType
@@ -103,10 +105,27 @@ def preprocess(config_file: str,
     all_data = []
     text_symbols = set(config['preprocessing']['text_symbols'])
     phoneme_symbols = set(config['preprocessing']['phoneme_symbols'])
+    text_symbols = sorted(list(text_symbols), key=len, reverse=True)
+    phoneme_symbols = sorted(list(phoneme_symbols), key=len, reverse=True)
+    text_tokenizer = RegexpTokenizer(
+            "|".join([re.escape(x) for x in text_symbols])
+        )
+    phoneme_tokenizer = RegexpTokenizer(
+            "|".join([re.escape(x) for x in phoneme_symbols])
+        )
+    OOVT = ''
+    OOVP = ''
     for lang, text, phon in sorted(train_data + val_data):
-        text = ''.join([t for t in text if t in text_symbols])
-        phons = ''.join([p for p in phon if p in phoneme_symbols])
-        all_data.append((lang, text, phons))
+        text = ''.join(text_tokenizer.tokenize(text))
+        phons = ''.join(phoneme_tokenizer.tokenize(phon))
+        # text = ''.join([t for t in text if t in text_symbols])
+        # phons = ''.join([p for p in phon if p in phoneme_symbols])
+        OOVT += ''.join([p for p in text if p not in text_symbols])
+        OOVP += ''.join([p for p in phon if p not in phoneme_symbols])
+        if phons and text:
+            all_data.append((lang, text, phons))
+    print(f"OOVT: {set(OOVT)}")
+    print(f"OOVP: {set(OOVP)}")
 
     for l, w, p in all_data:
         lang_dict = phoneme_dictionary.setdefault(l, {})
