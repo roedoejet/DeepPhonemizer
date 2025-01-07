@@ -85,7 +85,8 @@ class Phonemizer:
 
         split_text, cleaned_words = [], set()
         for text in texts:
-            cleaned_text = ''.join([t for t in text if t.isalnum() or t in punc_set])
+            # cleaned_text = ''.join([t for t in text if t.isalnum() or t in punc_set])
+            cleaned_text = text
             split = re.split(punc_pattern, cleaned_text)
             split = [s for s in split if len(s) > 0]
             split_text.append(split)
@@ -96,7 +97,8 @@ class Phonemizer:
                          for word in cleaned_words}
 
         # if word is not in dictionary, split it into subwords
-        words_to_split = [w for w in cleaned_words if word_phonemes[w] is None]
+        # words_to_split = [w for w in cleaned_words if word_phonemes[w] is None]
+        words_to_split = [] 
         word_splits = dict()
         for word in words_to_split:
             key = word

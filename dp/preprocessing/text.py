@@ -1,5 +1,6 @@
 from typing import List, Iterable, Dict, Tuple, Any
-
+from nltk.tokenize import RegexpTokenizer
+import re
 
 class LanguageTokenizer:
 
@@ -90,6 +91,9 @@ class SequenceTokenizer:
             self.token_to_idx[symbol] = len(self.token_to_idx)
         self.idx_to_token = {i: s for s, i in self.token_to_idx.items()}
         self.vocab_size = len(self.idx_to_token)
+        self.tokenizer = RegexpTokenizer(
+            "|".join([re.escape(x) for x in symbols])
+        )
 
     def __call__(self, sentence: Iterable[str], language: str) -> List[int]:
         """
@@ -102,8 +106,7 @@ class SequenceTokenizer:
         Returns:
            List[int]: Sequence of token indices.
         """
-
-        sentence = [item for item in sentence for i in range(self.char_repeats)]
+        sentence = [item for item in self.tokenizer.tokenize(sentence) for i in range(self.char_repeats)]
         if language not in self.languages:
             raise ValueError(f'Language not supported: {language}. Supported languages: {self.languages}')
         if self.lowercase:
@@ -192,9 +195,10 @@ class Preprocessor:
         Returns:
           Preprocessor: Preprocessor object.
         """
-
-        text_symbols = config['preprocessing']['text_symbols']
-        phoneme_symbols = config['preprocessing']['phoneme_symbols']
+        text_symbols = set(config['preprocessing']['text_symbols'])
+        phoneme_symbols = set(config['preprocessing']['phoneme_symbols'])
+        text_symbols = sorted(list(text_symbols), key=len, reverse=True)
+        phoneme_symbols = sorted(list(phoneme_symbols), key=len, reverse=True)
         lang_symbols = config['preprocessing']['languages']
         char_repeats = config['preprocessing']['char_repeats']
         lowercase = config['preprocessing']['lowercase']
