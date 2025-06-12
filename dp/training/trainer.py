@@ -122,7 +122,6 @@ class Trainer:
                 avg_loss = sum(losses) / len(losses) if len(losses) > 0 else math.inf
                 pbar.set_description(desc=f'Rank: {self.rank} | Epoch: {epoch} | Step {step} '
                                           f'| Loss: {avg_loss:#.4}', refresh=True)
-
                 pred = model(batch)
                 loss = criterion(pred, batch)
 

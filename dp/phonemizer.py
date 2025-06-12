@@ -74,7 +74,6 @@ class Phonemizer:
                                      batch_size=batch_size)
 
         word_phonemes.update({pred.word: pred.phonemes for pred in predictions})
-        breakpoint()
 
     def phonemise_list(self,
                        texts: List[str],
@@ -99,7 +98,8 @@ class Phonemizer:
         """
 
         punc_set = set(punctuation + '- ')
-        punc_pattern = re.compile(f'([{punctuation + " "}])')
+        # punc_pattern = re.compile(f'([{punctuation + " "}])')
+        punc_pattern = re.compile(f'([{punctuation}])')
         
         split_text, cleaned_words = [], set()
         for text in texts:
