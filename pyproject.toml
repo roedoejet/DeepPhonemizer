@@ -44,6 +44,9 @@ tests = ["pytest-cov"]
 docs = ["mkdocs", "mkdocs-material"]
 dev = ["bumpversion"]
 
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests"]
+
 [tool.setuptools]
-packages = ["dp"]
 include-package-data = true
