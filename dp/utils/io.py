@@ -1,6 +1,6 @@
 import pickle
 from pathlib import Path
-from typing import Dict, List, Any, Union
+from typing import Any, Dict, List, Union
 
 import torch
 import yaml
@@ -18,7 +18,7 @@ def read_config(path: str) -> Dict[str, Any]:
 
     """
 
-    with open(path, 'r', encoding='utf-8') as stream:
+    with open(path, "r", encoding="utf-8") as stream:
         config = yaml.load(stream, Loader=yaml.FullLoader)
     return config
 
@@ -32,11 +32,11 @@ def save_config(config: Dict[str, Any], path: str) -> None:
         path (str): Path to save the dictionary to (.yaml).
     """
 
-    with open(path, 'w+', encoding='utf-8') as stream:
+    with open(path, "w+", encoding="utf-8") as stream:
         yaml.dump(config, stream, default_flow_style=False)
 
 
-def get_files(path: str, extension: str = '.wav') -> List[Path]:
+def get_files(path: str, extension: str = ".wav") -> List[Path]:
     """
     Recursively retrieves all files with a given extension from a folder.
 
@@ -48,7 +48,7 @@ def get_files(path: str, extension: str = '.wav') -> List[Path]:
         List[Path]: List of paths to the found files.
     """
 
-    return list(Path(path).expanduser().resolve().rglob(f'*{extension}'))
+    return list(Path(path).expanduser().resolve().rglob(f"*{extension}"))
 
 
 def pickle_binary(data: object, file: Union[str, Path]) -> None:
@@ -60,7 +60,7 @@ def pickle_binary(data: object, file: Union[str, Path]) -> None:
         file (Union[str, Path]): Path to destination file (use the .pkl extension).
     """
 
-    with open(str(file), 'wb') as f:
+    with open(str(file), "wb") as f:
         pickle.dump(data, f)
 
 
@@ -76,11 +76,13 @@ def unpickle_binary(file: Union[str, Path]) -> object:
 
     """
 
-    with open(str(file), 'rb') as f:
+    with open(str(file), "rb") as f:
         return pickle.load(f)
 
 
-def to_device(batch: Dict[str, torch.Tensor], device: torch.device) -> Dict[str, torch.Tensor]:
+def to_device(
+    batch: Dict[str, torch.Tensor], device: torch.device
+) -> Dict[str, torch.Tensor]:
     """
     Sends a batch of data to the given torch devicee (cpu or cuda).
 

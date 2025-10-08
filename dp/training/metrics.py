@@ -1,16 +1,19 @@
+from typing import List, Tuple, Union
+
 import numpy
-from typing import List, Union, Tuple
 
 
-def word_error(predicted: List[Union[str, int]], target: List[Union[str, int]]) -> float:
+def word_error(
+    predicted: List[Union[str, int]], target: List[Union[str, int]]
+) -> float:
     """Calculates the word error rate of a single word result.
 
     Args:
       predicted: Predicted word.
       target: Target word.
-      predicted: List[Union[str: 
-      int]]: 
-      target: List[Union[str: 
+      predicted: List[Union[str:
+      int]]:
+      target: List[Union[str:
 
     Returns:
       Word error
@@ -20,23 +23,24 @@ def word_error(predicted: List[Union[str, int]], target: List[Union[str, int]]) 
     return int(predicted != target)
 
 
-def phoneme_error(predicted: List[Union[str, int]], target: List[Union[str, int]]) -> Tuple[int, int]:
+def phoneme_error(
+    predicted: List[Union[str, int]], target: List[Union[str, int]]
+) -> Tuple[int, int]:
     """Calculates the phoneme error rate of a single result based on the Levenshtein distance.
 
     Args:
       predicted: Predicted word.
       target: Target word.
-      predicted: List[Union[str: 
-      int]]: 
-      target: List[Union[str: 
+      predicted: List[Union[str:
+      int]]:
+      target: List[Union[str:
 
     Returns:
       Phoneme error.
 
     """
 
-    d = numpy.zeros((len(target) + 1) * (len(predicted) + 1),
-                    dtype=numpy.uint8)
+    d = numpy.zeros((len(target) + 1) * (len(predicted) + 1), dtype=numpy.uint8)
     d = d.reshape((len(target) + 1, len(predicted) + 1))
     for i in range(len(target) + 1):
         for j in range(len(predicted) + 1):
@@ -56,4 +60,3 @@ def phoneme_error(predicted: List[Union[str, int]], target: List[Union[str, int]
                 d[i][j] = min(substitution, insertion, deletion)
 
     return d[len(target)][len(predicted)], len(target)
-

@@ -8,7 +8,8 @@ def ignore_exception(f):
             result = f(*args, **kwargs)
             return result
         except Exception:
-            print(f'Catched exception in {f}:')
+            print(f"Catched exception in {f}:")
             traceback.print_exc()
             return None
+
     return apply_func

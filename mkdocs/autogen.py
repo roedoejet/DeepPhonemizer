@@ -11,18 +11,20 @@ def delete_space(parts, start, end):
         return None
     count = 0
     while count < len(parts[start]):
-        if parts[start][count] == ' ':
+        if parts[start][count] == " ":
             count += 1
         else:
             break
-    return '\n'.join(y for y in [x[count:] for x in parts[start : end + 1] if len(x) > count])
+    return "\n".join(
+        y for y in [x[count:] for x in parts[start : end + 1] if len(x) > count]
+    )
 
 
 def change_args_to_dict(string):
     if string is None:
         return None
     ans = []
-    strings = string.split('\n')
+    strings = string.split("\n")
     ind = 1
     start = 0
     while ind <= len(strings):
@@ -30,7 +32,7 @@ def change_args_to_dict(string):
             ind += 1
         else:
             if start < ind:
-                ans.append('\n'.join(strings[start:ind]))
+                ans.append("\n".join(strings[start:ind]))
             start = ind
             ind += 1
     d = {}
@@ -43,14 +45,14 @@ def change_args_to_dict(string):
 
 def remove_next_line(comments):
     for x in comments:
-        if comments[x] is not None and '\n' in comments[x]:
-            comments[x] = ' '.join(comments[x].split('\n'))
+        if comments[x] is not None and "\n" in comments[x]:
+            comments[x] = " ".join(comments[x].split("\n"))
     return comments
 
 
 def skip_space_line(parts, ind):
     while ind < len(parts):
-        if re.match(r'^\s*$', parts[ind]):
+        if re.match(r"^\s*$", parts[ind]):
             ind += 1
         else:
             break
@@ -62,29 +64,29 @@ def parse_func_string(comment):
     if comment is None or len(comment) == 0:
         return {}
     comments = {}
-    paras = ('Args', 'Attributes', 'Returns', 'Raises')
+    paras = ("Args", "Attributes", "Returns", "Raises")
     comment_parts = [
-        'short_description',
-        'long_description',
-        'Args',
-        'Attributes',
-        'Returns',
-        'Raises',
+        "short_description",
+        "long_description",
+        "Args",
+        "Attributes",
+        "Returns",
+        "Raises",
     ]
     for x in comment_parts:
         comments[x] = None
 
-    parts = re.split(r'\n', comment)
+    parts = re.split(r"\n", comment)
     ind = 1
     while ind < len(parts):
-        if re.match(r'^\s*$', parts[ind]):
+        if re.match(r"^\s*$", parts[ind]):
             break
         else:
             ind += 1
 
-    comments['short_description'] = '\n'.join(
-        ['\n'.join(re.split('\n\s+', x.strip())) for x in parts[0:ind]]
-    ).strip(':\n\t ')
+    comments["short_description"] = "\n".join(
+        ["\n".join(re.split("\n\s+", x.strip())) for x in parts[0:ind]]
+    ).strip(":\n\t ")
     ind = skip_space_line(parts, ind)
 
     start = ind
@@ -93,10 +95,10 @@ def parse_func_string(comment):
             break
         else:
             ind += 1
-    long_description = '\n'.join(
-        ['\n'.join(re.split('\n\s+', x.strip())) for x in parts[start:ind]]
-    ).strip(':\n\t ')
-    comments['long_description'] = long_description
+    long_description = "\n".join(
+        ["\n".join(re.split("\n\s+", x.strip())) for x in parts[start:ind]]
+    ).strip(":\n\t ")
+    comments["long_description"] = long_description
 
     ind = skip_space_line(paras, ind)
     while ind < len(parts):
@@ -127,69 +129,69 @@ def parse_func_string(comment):
 
 
 def md_parse_line_break(comment):
-    comment = comment.replace('  ', '\n\n')
-    return comment.replace(' - ', '\n\n- ')
+    comment = comment.replace("  ", "\n\n")
+    return comment.replace(" - ", "\n\n- ")
 
 
 def to_md(comment_dict):
-    doc = ''
-    if 'short_description' in comment_dict:
-        doc += comment_dict['short_description']
-        doc += '\n\n'
+    doc = ""
+    if "short_description" in comment_dict:
+        doc += comment_dict["short_description"]
+        doc += "\n\n"
 
-    if 'long_description' in comment_dict:
-        doc += md_parse_line_break(comment_dict['long_description'])
-        doc += '\n'
+    if "long_description" in comment_dict:
+        doc += md_parse_line_break(comment_dict["long_description"])
+        doc += "\n"
 
-    if 'Args' in comment_dict and comment_dict['Args'] is not None:
-        doc += '##### Args\n'
-        for arg, des in comment_dict['Args'].items():
-            doc += '* **' + arg + '**: ' + des + '\n\n'
+    if "Args" in comment_dict and comment_dict["Args"] is not None:
+        doc += "##### Args\n"
+        for arg, des in comment_dict["Args"].items():
+            doc += "* **" + arg + "**: " + des + "\n\n"
 
-    if 'Attributes' in comment_dict and comment_dict['Attributes'] is not None:
-        doc += '##### Attributes\n'
-        for arg, des in comment_dict['Attributes'].items():
-            doc += '* **' + arg + '**: ' + des + '\n\n'
+    if "Attributes" in comment_dict and comment_dict["Attributes"] is not None:
+        doc += "##### Attributes\n"
+        for arg, des in comment_dict["Attributes"].items():
+            doc += "* **" + arg + "**: " + des + "\n\n"
 
-    if 'Returns' in comment_dict and comment_dict['Returns'] is not None:
-        doc += '##### Returns\n'
-        if isinstance(comment_dict['Returns'], str):
-            doc += comment_dict['Returns']
-            doc += '\n'
+    if "Returns" in comment_dict and comment_dict["Returns"] is not None:
+        doc += "##### Returns\n"
+        if isinstance(comment_dict["Returns"], str):
+            doc += comment_dict["Returns"]
+            doc += "\n"
         else:
-            for arg, des in comment_dict['Returns'].items():
-                doc += '* **' + arg + '**: ' + des + '\n\n'
+            for arg, des in comment_dict["Returns"].items():
+                doc += "* **" + arg + "**: " + des + "\n\n"
     return doc
 
 
 def parse_func_args(function):
-    args = [a.arg for a in function.args.args if a.arg != 'self']
+    args = [a.arg for a in function.args.args if a.arg != "self"]
     kwargs = []
     if function.args.kwarg:
-        kwargs = ['**' + function.args.kwarg.arg]
+        kwargs = ["**" + function.args.kwarg.arg]
 
-    return '(' + ', '.join(args + kwargs) + ')'
+    return "(" + ", ".join(args + kwargs) + ")"
 
 
 def get_func_comments(function_definitions):
-    doc = ''
+    doc = ""
     for f in function_definitions:
         temp_str = to_md(parse_func_string(ast.get_docstring(f)))
-        doc += ''.join(
+        doc += "".join(
             [
-                '### ',
-                f.name.replace('_', '\\_'),
-                '\n',
-                '```python',
-                '\n',
-                'def ',
+                "### ",
+                f.name.replace("_", "\\_"),
+                "\n",
+                "```python",
+                "\n",
+                "def ",
                 f.name,
                 parse_func_args(f),
-                '\n',
-                '```',
-                '\n',
+                "\n",
+                "```",
+                "\n",
                 temp_str,
-                '\n',
+                "\n",
             ]
         )
 
@@ -201,7 +203,9 @@ def get_comments_str(file_name):
         file_contents = fd.read()
     module = ast.parse(file_contents)
 
-    function_definitions = [node for node in module.body if isinstance(node, ast.FunctionDef)]
+    function_definitions = [
+        node for node in module.body if isinstance(node, ast.FunctionDef)
+    ]
 
     doc = get_func_comments(function_definitions)
 
@@ -213,27 +217,28 @@ def get_comments_str(file_name):
         method_definitions = [
             node
             for node in class_def.body
-            if isinstance(node, ast.FunctionDef) and (node.name[0] != '_' or node.name[:2] == '__')
+            if isinstance(node, ast.FunctionDef)
+            and (node.name[0] != "_" or node.name[:2] == "__")
         ]
 
         temp_str += get_func_comments(method_definitions)
-        doc += '## class ' + class_def.name + '\n' + temp_str
+        doc += "## class " + class_def.name + "\n" + temp_str
     return doc
 
 
 def extract_comments(directory):
     for parent, dir_names, file_names in os.walk(directory):
         for file_name in file_names:
-            if os.path.splitext(file_name)[1] == '.py' and file_name != '__init__.py':
+            if os.path.splitext(file_name)[1] == ".py" and file_name != "__init__.py":
                 # with open
                 doc = get_comments_str(os.path.join(parent, file_name))
-                directory = os.path.join('docs', parent.replace('../dp/', ''))
+                directory = os.path.join("docs", parent.replace("../dp/", ""))
                 if not os.path.exists(directory):
                     os.makedirs(directory)
 
-                output_file = open(os.path.join(directory, file_name[:-3] + '.md'), 'w')
+                output_file = open(os.path.join(directory, file_name[:-3] + ".md"), "w")
                 output_file.write(doc)
                 output_file.close()
 
 
-extract_comments('../dp/')
+extract_comments("../dp/")
