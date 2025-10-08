@@ -26,7 +26,7 @@ The main advantages of this repo are:
 * Speed: The repo is highly optimized for fast inference by using dictionaries and batching.
 
 
-Check out the [inference](https://colab.research.google.com/github/as-ideas/DeepPhonemizer/blob/main/dp/notebooks/Inference_Example.ipynb) and [training](https://colab.research.google.com/github/as-ideas/DeepPhonemizer/blob/main/dp/notebooks/Training_Example.ipynb) tutorials on Colab! 
+Check out the [inference](https://colab.research.google.com/github/as-ideas/DeepPhonemizer/blob/main/deep_phonemizer/notebooks/Inference_Example.ipynb) and [training](https://colab.research.google.com/github/as-ideas/DeepPhonemizer/blob/main/deep_phonemizer/notebooks/Training_Example.ipynb) tutorials on Colab! 
 
 Read the documentation at: https://as-ideas.github.io/DeepPhonemizer/
 
@@ -42,7 +42,7 @@ pip install deep-phonemizer
 Download the pretrained model: [en_us_cmudict_ipa_forward](https://public-asai-dl-models.s3.eu-central-1.amazonaws.com/DeepPhonemizer/en_us_cmudict_ipa_forward.pt)
 
 ```bash
-from dp.phonemizer import Phonemizer
+from deep_phonemizer.phonemizer import Phonemizer
 
 phonemizer = Phonemizer.from_checkpoint('en_us_cmudict_ipa.pt')
 phonemizer('Phonemizing an English text is imposimpable!', lang='en_us')
@@ -56,8 +56,8 @@ phonemizer('Phonemizing an English text is imposimpable!', lang='en_us')
 You can easily train your own autoregressive or forward transformer model. 
 All necessary parameters are set in a config.yaml, which you can find under:
 ```bash
-dp/configs/forward_config.yaml
-dp/configs/autoreg_config.yaml
+deep_phonemizer/configs/forward_config.yaml
+deep_phonemizer/configs/autoreg_config.yaml
 ```
 for the forward and autoregressive transformer model, respectively.
 
@@ -69,8 +69,8 @@ CUDA_VISIBLE_DEVICES=0,1 python run_training.py
 Inside the training script prepare data in a tuple-format and use the preprocess and train API:
 
 ```python
-from dp.preprocess import preprocess
-from dp.train import train
+from deep_phonemizer.preprocess import preprocess
+from deep_phonemizer.train import train
 
 train_data = [('en_us', 'young', 'jʌŋ'),
                 ('de', 'benützten', 'bənʏt͡stn̩'),
@@ -79,7 +79,7 @@ train_data = [('en_us', 'young', 'jʌŋ'),
 val_data = [('en_us', 'young', 'jʌŋ'),
             ('de', 'benützten', 'bənʏt͡stn̩')] * 100
 
-config_file = 'dp/configs/forward_config.yaml'
+config_file = 'deep_phonemizer/configs/forward_config.yaml'
 
 preprocess(config_file=config_file,
            train_data=train_data,
@@ -102,7 +102,7 @@ dictionary of word-phoneme mappings that is applied first, and it uses the Trans
 only to predict out-of-dictionary words.
 
 ```python
-from dp.phonemizer import Phonemizer
+from deep_phonemizer.phonemizer import Phonemizer
 
 phonemizer = Phonemizer.from_checkpoint('checkpoints/best_model.pt')
 phonemes = phonemizer('Phonemizing an English text is imposimpable!', lang='en_us')
@@ -111,7 +111,7 @@ phonemes = phonemizer('Phonemizing an English text is imposimpable!', lang='en_u
 If you need more inference information, you can use following API:
 
 ```python
-from dp.phonemizer import Phonemizer
+from deep_phonemizer.phonemizer import Phonemizer
 
 result = phonemizer.phonemise_list(['Phonemizing an English text is imposimpable!'], lang='en_us')
 
@@ -133,7 +133,7 @@ for word, pred in result.predictions.items():
 You can easily export the underlying transformer models with TorchScript:
 ```python
 import torch
-from dp.phonemizer import Phonemizer
+from deep_phonemizer.phonemizer import Phonemizer
 
 phonemizer = Phonemizer.from_checkpoint('checkpoints/best_model.pt')
 model = phonemizer.predictor.model

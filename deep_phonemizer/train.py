@@ -4,11 +4,11 @@ from pathlib import Path
 import torch
 from torch.distributed import init_process_group
 
-from dp.model.model import ModelType, create_model, load_checkpoint
-from dp.preprocessing.text import Preprocessor
-from dp.training.trainer import Trainer
-from dp.utils.io import read_config
-from dp.utils.logging import get_logger
+from deep_phonemizer.model.model import ModelType, create_model, load_checkpoint
+from deep_phonemizer.preprocessing.text import Preprocessor
+from deep_phonemizer.training.trainer import Trainer
+from deep_phonemizer.utils.io import read_config
+from deep_phonemizer.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
@@ -33,10 +33,10 @@ def train(
     config = read_config(config_file)
 
     if num_gpus > 1:
-        os.environ["MASTER_ADDR"] = config["training"]["ddp_host"]
-        os.environ["MASTER_PORT"] = config["training"]["ddp_post"]
+        os.environ["MASTER_ADDR"] = config["training"]["ddeep_phonemizer_host"]
+        os.environ["MASTER_PORT"] = config["training"]["ddeep_phonemizer_post"]
         init_process_group(
-            backend=config["training"]["ddp_backend"], rank=rank, world_size=num_gpus
+            backend=config["training"]["ddeep_phonemizer_backend"], rank=rank, world_size=num_gpus
         )
 
     if checkpoint_file is not None:
@@ -73,13 +73,13 @@ def train(
     else:
         device = torch.device("cpu")
 
-    use_ddp = True if num_gpus > 1 else False
+    use_ddeep_phonemizer = True if num_gpus > 1 else False
 
     trainer = Trainer(
         checkpoint_dir=checkpoint_dir,
         device=device,
         rank=rank,
-        use_ddp=use_ddp,
+        use_ddeep_phonemizer=use_ddeep_phonemizer,
         loss_type=loss_type,
     )
     trainer.train(

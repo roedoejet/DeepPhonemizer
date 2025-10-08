@@ -1,6 +1,6 @@
 import unittest
 
-from dp.training.metrics import phoneme_error, word_error
+from deep_phonemizer.training.metrics import phoneme_error, word_error
 
 
 class TestWordError(unittest.TestCase):

@@ -4,10 +4,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from dp import preprocess
-from dp.preprocess import preprocess
-from dp.preprocessing.text import Preprocessor
-from dp.utils.io import read_config, save_config, unpickle_binary
+from deep_phonemizer import preprocess
+from deep_phonemizer.preprocess import preprocess
+from deep_phonemizer.preprocessing.text import Preprocessor
+from deep_phonemizer.utils.io import read_config, save_config, unpickle_binary
 
 
 class TestPreprocess(unittest.TestCase):

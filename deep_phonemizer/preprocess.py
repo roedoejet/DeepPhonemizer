@@ -7,10 +7,10 @@ from typing import Iterable, List, Tuple
 import tqdm
 from nltk.tokenize import RegexpTokenizer
 
-from dp.model.model import ModelType
-from dp.preprocessing.text import Preprocessor
-from dp.utils.io import pickle_binary, read_config
-from dp.utils.logging import get_logger
+from deep_phonemizer.model.model import ModelType
+from deep_phonemizer.preprocessing.text import Preprocessor
+from deep_phonemizer.utils.io import pickle_binary, read_config
+from deep_phonemizer.utils.logging import get_logger
 
 logger = get_logger(__name__)
 

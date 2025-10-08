@@ -1,4 +1,4 @@
-from dp.phonemizer import Phonemizer
+from deep_phonemizer.phonemizer import Phonemizer
 
 if __name__ == "__main__":
 

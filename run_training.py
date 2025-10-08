@@ -4,9 +4,9 @@ from pathlib import Path
 import torch
 import torch.multiprocessing as mp
 
-from dp.preprocess import preprocess
-from dp.train import train
-from dp.utils.io import read_config
+from deep_phonemizer.preprocess import preprocess
+from deep_phonemizer.train import train
+from deep_phonemizer.utils.io import read_config
 
 config_file_path = Path("logging.yaml")
 config = read_config(config_file_path)
@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     val_data = [("en_us", "young", "jʌŋ"), ("de", "benützten", "bənʏt͡stn̩")] * 100
 
-    config_file = "dp/configs/forward_config.yaml"
+    config_file = "deep_phonemizer/configs/forward_config.yaml"
 
     preprocess(
         config_file=config_file,

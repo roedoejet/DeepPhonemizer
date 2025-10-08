@@ -7,12 +7,12 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from dp import preprocess
-from dp.model.model import ForwardTransformer
-from dp.model.predictor import Predictor
-from dp.preprocess import preprocess
-from dp.train import train
-from dp.utils.io import read_config, save_config
+from deep_phonemizer import preprocess
+from deep_phonemizer.model.model import ForwardTransformer
+from deep_phonemizer.model.predictor import Predictor
+from deep_phonemizer.preprocess import preprocess
+from deep_phonemizer.train import train
+from deep_phonemizer.utils.io import read_config, save_config
 
 
 class TestForwardTraining(unittest.TestCase):

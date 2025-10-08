@@ -2,8 +2,8 @@ import unittest
 from typing import List
 from unittest.mock import patch
 
-from dp.model.predictor import Prediction, Predictor
-from dp.phonemizer import Phonemizer
+from deep_phonemizer.model.predictor import Prediction, Predictor
+from deep_phonemizer.phonemizer import Phonemizer
 
 
 class PredictorMock:

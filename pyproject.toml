@@ -3,12 +3,15 @@ requires = ["setuptools>=65.5.1", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "deep-phonemizer"
-version = "0.0.19"
+name = "nrc-deep-phonemizer"
+version = "0.0.20"
 description = "Grapheme to phoneme conversion with deep learning."
 readme = "README.rst"
 license = { text = "MIT" }
-authors = [{ name = "Christian Schäfer", email = "c.schaefer.home@gmail.com" }]
+authors = [
+    { name = "Christian Schäfer", email = "c.schaefer.home@gmail.com" },
+    { name = "Aidan Pine", email = "hello@aidanpine.ca" },
+]
 requires-python = ">=3.6"
 classifiers = [
     "Development Status :: 4 - Beta",

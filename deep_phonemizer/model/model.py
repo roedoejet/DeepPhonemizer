@@ -14,10 +14,10 @@ from torch.nn.modules.dropout import Dropout
 from torch.nn.modules.linear import Linear, NonDynamicallyQuantizableLinear
 from torch.nn.modules.sparse import Embedding
 
-from dp.model.utils import (PositionalEncoding,
+from deep_phonemizer.model.utils import (PositionalEncoding,
                             _generate_square_subsequent_mask, _make_len_mask,
                             get_dedup_tokens)
-from dp.preprocessing.text import (LanguageTokenizer, Preprocessor,
+from deep_phonemizer.preprocessing.text import (LanguageTokenizer, Preprocessor,
                                    SequenceTokenizer)
 
 

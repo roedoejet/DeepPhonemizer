@@ -10,14 +10,14 @@ from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.tensorboard import SummaryWriter
 
-from dp.model.model import Model
-from dp.model.utils import _trim_util_stop
-from dp.preprocessing.text import Preprocessor
-from dp.training.dataset import new_dataloader
-from dp.training.decorators import ignore_exception
-from dp.training.evaluation import evaluate_samples
-from dp.training.losses import CrossEntropyLoss, CTCLoss
-from dp.utils.io import to_device, unpickle_binary
+from deep_phonemizer.model.model import Model
+from deep_phonemizer.model.utils import _trim_util_stop
+from deep_phonemizer.preprocessing.text import Preprocessor
+from deep_phonemizer.training.dataset import new_dataloader
+from deep_phonemizer.training.decorators import ignore_exception
+from deep_phonemizer.training.evaluation import evaluate_samples
+from deep_phonemizer.training.losses import CrossEntropyLoss, CTCLoss
+from deep_phonemizer.utils.io import to_device, unpickle_binary
 
 
 class Trainer:
@@ -28,7 +28,7 @@ class Trainer:
         checkpoint_dir: Path,
         device: torch.device,
         rank: int,
-        use_ddp: bool,
+        use_ddeep_phonemizer: bool,
         loss_type="ctc",
     ) -> None:
         """
@@ -38,14 +38,14 @@ class Trainer:
           checkpoint_dir (Path): Directory to store the model checkpoints.
           device (torch.device): Device used for training
           rank (int): Rank of the current device
-          use_ddp (bool): Flag whether DDP is used for training
+          use_ddeep_phonemizer (bool): Flag whether Ddeep_phonemizer is used for training
           loss_type (str): Type of loss: 'ctc' for forward transformer models
                            and 'cross_entropy' for autoregressive models.
         """
 
         self.checkpoint_dir = checkpoint_dir
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
-        self.use_ddp = use_ddp
+        self.use_ddeep_phonemizer = use_ddeep_phonemizer
         self.rank = rank
         self.device = device
         self.writer = SummaryWriter(log_dir=str(self.checkpoint_dir / "logs"))
@@ -84,7 +84,7 @@ class Trainer:
         model = model.to(self.device)
         model.train()
 
-        if self.use_ddp:
+        if self.use_ddeep_phonemizer:
             model = DistributedDataParallel(model, device_ids=[self.rank])
 
         criterion = self.criterion.to(self.device)
@@ -97,7 +97,7 @@ class Trainer:
 
         train_loader = new_dataloader(
             dataset_file=data_dir / "train_dataset.pkl",
-            use_ddp=self.use_ddp,
+            use_ddeep_phonemizer=self.use_ddeep_phonemizer,
             drop_last=True,
             batch_size=config["training"]["batch_size"],
         )
@@ -105,7 +105,7 @@ class Trainer:
         if self.rank == 0:
             val_loader = new_dataloader(
                 dataset_file=data_dir / "val_dataset.pkl",
-                use_ddp=False,
+                use_ddeep_phonemizer=False,
                 drop_last=False,
                 batch_size=config["training"]["batch_size_val"],
             )
@@ -131,7 +131,7 @@ class Trainer:
         start_epoch = checkpoint["step"] // len(train_loader)
 
         for epoch in range(start_epoch + 1, config["training"]["epochs"] + 1):
-            if self.use_ddp:
+            if self.use_ddeep_phonemizer:
                 train_loader.sampler.set_epoch(epoch)
             pbar = tqdm.tqdm(enumerate(train_loader, 1), total=len(train_loader))
             for i, batch in pbar:
@@ -252,7 +252,7 @@ class Trainer:
 
         for batch in val_batches:
             batch = to_device(batch, device)
-            generated_batch, _ = (model.module if self.use_ddp else model).generate(
+            generated_batch, _ = (model.module if self.use_ddeep_phonemizer else model).generate(
                 batch
             )
             for i in range(batch["text"].size(0)):
@@ -323,7 +323,7 @@ class Trainer:
         checkpoint: Dict[str, Any],
         path: Path,
     ) -> None:
-        checkpoint["model"] = (model.module if self.use_ddp else model).state_dict()
+        checkpoint["model"] = (model.module if self.use_ddeep_phonemizer else model).state_dict()
         if optimizer is not None:
             checkpoint["optimizer"] = optimizer.state_dict()
         else:

@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Tuple
 
-from dp.training.metrics import phoneme_error, word_error
+from deep_phonemizer.training.metrics import phoneme_error, word_error
 
 
 def evaluate_samples(

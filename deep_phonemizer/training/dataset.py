@@ -9,7 +9,7 @@ from torch.utils.data import DistributedSampler
 from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.dataset import Dataset
 
-from dp.utils.io import unpickle_binary
+from deep_phonemizer.utils.io import unpickle_binary
 
 
 class PhonemizerDataset(Dataset):
@@ -93,7 +93,7 @@ def collate_dataset(batch: List[dict]) -> Dict[str, torch.Tensor]:
 
 
 def new_dataloader(
-    dataset_file: Path, batch_size=32, drop_last=False, use_binning=True, use_ddp=False
+    dataset_file: Path, batch_size=32, drop_last=False, use_binning=True, use_ddeep_phonemizer=False
 ) -> DataLoader:
     dataset = unpickle_binary(dataset_file)
     phonemizer_dataset = PhonemizerDataset(dataset)
@@ -104,7 +104,7 @@ def new_dataloader(
             phoneme_lens=phoneme_lens, batch_size=batch_size, bin_size=batch_size * 3
         )
     else:
-        sampler = DistributedSampler(phonemizer_dataset) if use_ddp else None
+        sampler = DistributedSampler(phonemizer_dataset) if use_ddeep_phonemizer else None
 
     return DataLoader(
         phonemizer_dataset,
