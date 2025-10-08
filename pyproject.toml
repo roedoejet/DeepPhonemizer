@@ -3,9 +3,9 @@ requires = ["setuptools>=65.5.1", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nrc-deep-phonemizer"
+name = "ilt-deep-phonemizer"
 version = "0.0.20"
-description = "Grapheme to phoneme conversion with deep learning."
+description = "NRC Indigenous Language Technology Project fork of the DeepPhonemizer grapheme to phoneme conversion with deep learning library."
 readme = "README.rst"
 license = { text = "MIT" }
 authors = [
