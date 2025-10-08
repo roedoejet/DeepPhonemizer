@@ -6,9 +6,16 @@ import torch
 import torch.nn as nn
 from torch.nn import TransformerEncoderLayer, LayerNorm, TransformerEncoder
 
+from re import RegexFlag
 from dp.model.utils import get_dedup_tokens, _make_len_mask, _generate_square_subsequent_mask, PositionalEncoding
-from dp.preprocessing.text import Preprocessor
-
+from dp.preprocessing.text import Preprocessor, LanguageTokenizer, SequenceTokenizer
+from nltk.tokenize.regexp import RegexpTokenizer
+from torch.nn.modules.sparse import Embedding
+from torch.nn.modules.dropout import Dropout
+from torch.nn.modules.container import ModuleList
+from torch.nn.modules.activation import MultiheadAttention
+from torch.nn.modules.linear import NonDynamicallyQuantizableLinear, Linear
+from torch.nn.functional import relu
 
 class ModelType(Enum):
     TRANSFORMER = 'transformer'
@@ -303,7 +310,8 @@ def load_checkpoint(checkpoint_path: str, device: str = 'cpu') -> Tuple[Model, D
     """
 
     device = torch.device(device)
-    checkpoint = torch.load(checkpoint_path, map_location=device)
+    with torch.serialization.safe_globals([Preprocessor, RegexFlag, LanguageTokenizer, SequenceTokenizer, RegexpTokenizer, ForwardTransformer, Embedding, relu, PositionalEncoding, Dropout, TransformerEncoderLayer, LayerNorm, TransformerEncoder, ModuleList, MultiheadAttention, NonDynamicallyQuantizableLinear, Linear]):
+        checkpoint = torch.load(checkpoint_path, map_location=device)
     model_type = checkpoint['config']['model']['type']
     model_type = ModelType(model_type)
     model = create_model(model_type, config=checkpoint['config'])
