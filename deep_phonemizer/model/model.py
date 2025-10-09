@@ -85,7 +85,7 @@ class ForwardTransformer(Model):
         )
         encoder_norm = LayerNorm(d_model)
         self.encoder = TransformerEncoder(
-            encoder_layer=encoder_layer, num_layers=layers, norm=encoder_norm
+            encoder_layer=encoder_layer, num_layers=layers, norm=encoder_norm, enable_nested_tensor=False
         )
 
         self.fc_out = nn.Linear(d_model, decoder_vocab_size)
