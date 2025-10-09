@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ilt-deep-phonemizer"
-version = "0.0.21"
+version = "0.0.22"
 description = "NRC Indigenous Language Technology Project fork of the DeepPhonemizer grapheme to phoneme conversion with deep learning library."
 readme = "README.rst"
 license = { text = "MIT" }
