@@ -3,6 +3,7 @@ from enum import Enum
 from re import RegexFlag
 from typing import Any, Dict, Tuple
 
+import _operator
 import torch
 import torch.nn as nn
 from nltk.tokenize.regexp import RegexpTokenizer
@@ -342,6 +343,8 @@ def load_checkpoint(
     device = torch.device(device)
     with torch.serialization.safe_globals(
         [
+            _operator.or_,
+            getattr,
             Preprocessor,
             RegexFlag,
             LanguageTokenizer,
